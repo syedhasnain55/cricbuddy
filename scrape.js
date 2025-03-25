@@ -1,4 +1,4 @@
-import express from "express";
+from "express";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import cors from "cors";
@@ -11,10 +11,17 @@ const upcomingUrl = "https://www.cricbuzz.com/cricket-schedule/upcoming-series";
 // Middleware
 app.use(cors());
 
-// 🏏 Fetch Live Matches
+const axiosOptions = {
+  headers: {
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Accept-Language": "en-US,en;q=0.9",
+  },
+};
+
 const fetchLiveMatches = async () => {
   try {
-    const { data } = await axios.get(liveUrl);
+    const { data } = await axios.get(liveUrl, axiosOptions);
     const $ = cheerio.load(data);
     let matches = [];
 
@@ -47,32 +54,6 @@ const fetchLiveMatches = async () => {
   }
 };
 
-// 📅 Fetch Upcoming Matches
-const fetchUpcomingMatches = async () => {
-  try {
-    const { data } = await axios.get(upcomingUrl);
-    const $ = cheerio.load(data);
-    let matches = [];
-
-    $(".cb-col-100.cb-col.cb-schdl").each((index, element) => {
-      const matchDetails = $(element);
-      const title = matchDetails
-        .find(".cb-col.cb-col-100.cb-lv-scrs-crd.cb-pos-rel")
-        .text()
-        .trim();
-      const date = matchDetails.find(".cb-col.cb-col-25.cb-lv-scrs-gray").text().trim();
-
-      if (title && date) {
-        matches.push({ title, date });
-      }
-    });
-
-    return matches;
-  } catch (error) {
-    console.error("Error fetching upcoming matches:", error.message);
-    return [];
-  }
-};
 
 // 📌 API Routes
 app.get("/", (req, res) => {
@@ -92,4 +73,4 @@ app.get("/upcoming-matches", async (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(✅ Server running on port ${PORT}));
